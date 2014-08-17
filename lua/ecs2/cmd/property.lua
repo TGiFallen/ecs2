@@ -7,8 +7,9 @@ local construct = construct
 
 ----
 -- Sets the mass of your aim entity (or your selection if you have any entities selected).
--- @function e_setmass
--- @param mass 
+-- @function e_mass
+-- @tparam number mass 
+-- @usage e_mass 300 // This will set the mass of all entities in your selection to 300.
 ECS.NewCommand( "e_mass", 1, function ( ply, args )
 	local data = { mass = math.Clamp( tonumber( args[1] or "1" ), 0.01, 50000 ) }
 	local mass = data.mass
@@ -37,7 +38,8 @@ end )
 ----
 -- Toggles the gravity of your aim entity (or your selection if you have any entities selected).
 -- @function e_gravity
--- @param boolean Enable/Disable
+-- @tparam boolean enable/disable
+-- @usage e_gravity 0 // This will disable the gravity of all entities in your selection.
 ECS.NewCommand( "e_gravity", 1, function ( ply, args )
 	local data = { GravityToggle = true }
 	if args[1] == "0" then data = { GravityToggle = false } end
@@ -59,7 +61,8 @@ end )
 ----
 -- Toggles the drag of your aim entity (or your selection if you have any entities selected).
 -- @function e_drag
--- @param boolean Enable/Disable 
+-- @tparam boolean enable/disable
+-- @usage e_drag 0 // This will disable the drag of all entities in your selection.
 ECS.NewCommand( "e_mass", 1, function ( ply, args )
 	local data = { DragOnOff = true }
 	if args[1] == "0" then data = { DragOnOff = false } end
@@ -89,7 +92,8 @@ end )
 ----
 -- Sets the physical property of your aim entity (or your selection if you have any entities selected).
 -- @function e_physprop
--- @param physprop Physprop material to set entities to.
+-- @tparam string physprop Physprop material to set entities to.
+-- @usage e_physprop jeeptire // This will set the physprop material of all entities in your selection to "jeeptire".
 ECS.NewCommand( "e_physprop", 1, function ( ply, args )
 	local data = { Material = args[1] or "" }
 
@@ -109,10 +113,11 @@ end )
 ----
 -- Sets the color property of your aim entity (or your selection if you have any entities selected).
 -- @function e_color
--- @param R Red color component.
--- @param G Green color component.
--- @param B Blue color component.
--- @param A Alpha color component (optional).
+-- @tparam number r Red color component.
+-- @tparam number g Green color component.
+-- @tparam number b Blue color component.
+-- @tparam[opt=nil] number a Alpha color component. If not given, entity retains current alpha.
+-- @usage e_color 255 0 0 127 // This will set the color of all entities in your selection to Color(255, 0, 0, 127).
 ECS.NewCommand( "e_color", 4, function ( ply, args )
 	local color = ECS.GetColor( args )
 	local alpha = -1
@@ -141,7 +146,8 @@ end )
 ----
 -- Sets the material of your aim entity (or your selection if you have any entities selected).
 -- @function e_material
--- @param material Material to set entities to. <b>DOUBLE CHECK PATH, YOU MIGHT LAG IF YOU PROVIDE AN INVALID MATERIAL.</b>
+-- @tparam string material Material to set entities to. <b>DOUBLE CHECK PATH, YOU MIGHT LAG IF YOU PROVIDE AN INVALID MATERIAL.</b>
+-- @usage e_material some/material/path // This will set the material of all entities in your selection to "some/material/path".
 ECS.NewCommand( "e_material", 1, function ( ply, args )
 	local data = { MaterialOverride = args[1] or "" }
 	local mat = data.MaterialOverride

@@ -62,6 +62,26 @@ function ECS.ReloadAll()
 	end
 end
 
+----
+-- Reloads ECS for specified player.
+-- @function ECS.Reload
+-- @param player
+function ECS.Reload( ply )
+	if not IsValid( ply ) then return end
+
+	// if ECS.GetSelectionCount( ply ) > 0 then
+	// 	ECS.RemoveAll( ply )
+	// 	ECS.SavedSelections[ ply ] = nil
+	// end
+
+	for name, info in pairs( ECS.Commands ) do
+		net.Start( "ECS.SendToClient" )
+			net.WriteString( name )
+			net.WriteInt( info.argCount, 32 )
+		net.Send( ply )
+	end
+end
+
 -- Receive and execute the command from the client
 net.Receive( "ECS.SendToServer", function( len, ply )
 	local name = net.ReadString()
@@ -216,11 +236,3 @@ function ECS.RemoveAll( ply )
 	end
 end
 
-hook.Add( "EntityRemoved", "ECS.OnEntRemove", function( ent )
-	for ply, info in pairs( ECS.Selections ) do
-		if info[ ent ] then 
-			ECS.RemoveEnt( ply, ent )
-			break
-		end
-	end
-end )

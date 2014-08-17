@@ -39,7 +39,9 @@ end )
 ----
 -- Freezes or unfreezes your aim (or your selection if you have any entities selected).
 -- @function e_freeze
--- @param boolean 1/0 for freeze/unfreeze
+-- @tparam boolean freeze/unfreeze
+-- @usage e_freeze 0 // This will unfreeze all entities in your selection.
+-- @usage e_freeze 1 // This will freeze all entities in your selection.
 ECS.NewCommand( "e_freeze", 1, function ( ply, args )
 	local bool = false
 	if args[1] and args[1] == "0" then bool = true end
@@ -58,10 +60,12 @@ end )
 ----
 -- Sets the position of your aim entity (or your selection if you have any entities selected) to the given coordinates. 
 -- @function e_setpos
--- @param X
--- @param Y
--- @param Z
--- @param arg Passing any argument here will set the position to your aim entity's position offset by the given coordinates.
+-- @tparam number x
+-- @tparam number y
+-- @tparam number z
+-- @tparam boolean toAimEnt If true, this set the position of your selection to your aim entity's position offset by the given coordinates.
+-- @usage e_setpos 0 0 50 1 // If you are aiming at an entity, it will move your entire selection to 50 units above that entity.
+-- @usage e_setpos 0 0 50 // This will move your entire selection to Vector(0, 0, 50).
 ECS.NewCommand( "e_setpos", 4, function ( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local center = Vector(0, 0, 0)
@@ -96,10 +100,12 @@ end )
 ----
 -- Offsets your aim entity's (or your selection if you have any entities selected) position by the given coordinates.
 -- @function e_move
--- @param X
--- @param Y
--- @param Z
--- @param boolean 1/0. If true, the offset will be local to the entity.
+-- @tparam number x
+-- @tparam number y
+-- @tparam number z
+-- @tparam boolean local/global. If true, the offset will be local to the entity.
+-- @usage e_move 0 0 50 1 // This will move your entire selection 50 units relative to each entity's Z axis.
+-- @usage e_move 0 0 50 // This will move your entire selection 50 units relative to the world's Z axis.
 ECS.NewCommand( "e_move", 4, "Add pos to trace entity or selection. 4th bool arg for local.", function ( ply, args )
 	local moveLocal = args[4] or false
 
@@ -124,10 +130,12 @@ end )
 ----
 -- Sets your aim entity's (or you rselection if you have any entities selected) angle to the given angle.
 -- @function e_setang
--- @param Pitch
--- @param Yaw
--- @param Roll
--- @param arg Passing any argument here will set the angle to your aim entity's angle offset by the given angle.
+-- @tparam number pitch
+-- @tparam number yaw
+-- @tparam number roll
+-- @tparam boolean toAimEnt If true, this will set the angle to your aim entity's angle offset by the given angle.
+-- @usage e_setang 0 45 0 1 // If you are aiming at an entity, it will set the angle of your entire selection to that entity's angles offset by 45 yaw.
+-- @usage e_setang 0 45 0 // This will set the angles of your entire selection to Angle(0, 45, 0).
 ECS.NewCommand( "e_setang", 4, "Set ang of trace entity or selection. 4th arg \"ent\" to copy trace entity.", function ( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local newAngle = ECS.GetAngle( args )
@@ -155,11 +163,13 @@ end )
 
 ----
 -- Offsets your aim entity's (or your selection if you have any entities selected) angle by the given angle.
--- @function e_move
--- @param X
--- @param Y
--- @param Z
--- @param boolean 1/0. If true, the offset will be local to the entity.
+-- @function e_addrot
+-- @tparam number x
+-- @tparam number y
+-- @tparam number z
+-- @tparam boolean local/global If true, the offset will be local to the entity.
+-- @usage e_addrot 0 45 0 1 // This will rotate each entity in your selection by 45 yaw local to itself.
+-- @usage e_addrot 0 45 0 // This will rotate each entity in your selection by 45 yaw local to the world.
 ECS.NewCommand( "e_addrot", 4, "Add ang of trace entity or selection. 4th arg for local.", function ( ply, args )
 	local rotateLocal = args[4] or false
 
