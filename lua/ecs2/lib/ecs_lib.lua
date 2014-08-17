@@ -67,13 +67,6 @@ end
 -- @function ECS.Reload
 -- @param player
 function ECS.Reload( ply )
-	if not IsValid( ply ) then return end
-
-	// if ECS.GetSelectionCount( ply ) > 0 then
-	// 	ECS.RemoveAll( ply )
-	// 	ECS.SavedSelections[ ply ] = nil
-	// end
-
 	for name, info in pairs( ECS.Commands ) do
 		net.Start( "ECS.SendToClient" )
 			net.WriteString( name )

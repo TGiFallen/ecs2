@@ -14,7 +14,7 @@ include( "ecs2/cmd/manipulate.lua" )
 include( "ecs2/cmd/property.lua" )
 include( "ecs2/cmd/constraint.lua" )
 
-hook.Add( "PlayerConnect", "ECS.OnPlayerConnect", function ( ply )
+hook.Add( "PlayerInitialSpawn", "ECS.InitPlayer", function ( ply )
 	ECS.Reload( ply )
 end )
 
