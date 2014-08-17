@@ -8,11 +8,11 @@ ECS = ECS or {
 	SavedSelections = { }
 }
 
-include( "ecs2/lib/ecs_lib.lua" )
-include( "ecs2/cmd/select.lua" )
-include( "ecs2/cmd/manipulate.lua" )
-include( "ecs2/cmd/property.lua" )
-include( "ecs2/cmd/constraint.lua" )
+include( "ecs/lib/ecs_lib.lua" )
+include( "ecs/cmd/select.lua" )
+include( "ecs/cmd/manipulate.lua" )
+include( "ecs/cmd/property.lua" )
+include( "ecs/cmd/constraint.lua" )
 
 hook.Add( "PlayerInitialSpawn", "ECS.InitPlayer", function ( ply )
 	ECS.Reload( ply )
