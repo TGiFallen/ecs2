@@ -1,6 +1,15 @@
 
 AddCSLuaFile()
 
+local NOHELP = "There is no help for this command!"
+
+local function PrintHelp( name, argCount, help )
+	MsgC( 
+		Color(125, 175, 255), "ECS: \n    ",
+		Color(200, 225, 255), "Command: " .. name .. "\n    Arguments: " .. argCount .. "\n    Help: " .. help .. "\n"
+	)
+end
+
 net.Receive( "ECS.SendToClient", function( len )
 	local name = net.ReadString()
 	local argCount = net.ReadInt( 32 )

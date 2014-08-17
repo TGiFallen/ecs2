@@ -2,7 +2,7 @@
 ----
 -- These commands add or remove entities from your ECS selection.
 
-ECS.SavedSelections = { }
+ECS.SavedSelections = ECS.SavedSelections or { }
 
 ----
 -- Adds your aim entity to your current selection.
@@ -53,3 +53,52 @@ ECS.NewCommand( "e_deselectsphere", 1, function( ply, args )
 		ECS.RemoveEnts( ply, find or { } )
 	end
 end )
+
+----
+-- Saves your current selection for later use. Does not persist through sessions.
+-- @function e_selectsave
+-- @param name The name to use for your saved selection.
+-- @param boolean If true, the selection will be added to the save, instead of overwriting it.
+ECS.NewCommand( "e_selectsave", 2, function( ply, args ) 
+	if not args[1] then return end
+
+	if ECS.GetSelectionCount( ply ) > 0 then
+		ECS.SavedSelections[ ply ] = ECS.SavedSelections[ ply ] or { }
+
+		local name = args[1]
+		if args[2] then
+			ECS.SavedSelections[ ply ][ name ] = ECS.SavedSelections[ ply ][ name ] or { }
+			table.Merge( ECS.SavedSelections[ ply ][ name ], ECS.GetSelection( ply ) )
+		else
+			ECS.SavedSelections[ ply ][ name ] = table.Copy( ECS.GetSelection( ply ) )
+		end
+	end	
+end )
+
+----
+-- Loads given saved selection.
+-- @function e_selectload
+-- @param name The name to use for your saved selection.
+-- @param boolean boolean If true, the save will be added to your current selection, instead of overwriting it.
+ECS.NewCommand( "e_selectload", 2, function( ply, args ) 
+	if not args[1] then return end
+	if not ECS.SavedSelections[ ply ] then return end
+	if not ECS.SavedSelections[ ply ][ args[1] ] then return end
+
+	if not args[2] then ECS.RemoveAll( ply ) end
+	
+	local name = args[1]
+	ECS.Selections[ ply ] = ECS.Selections[ ply ] or { }
+
+	for ent, info in pairs( ECS.SavedSelections[ ply ][ name ] ) do
+		if not IsValid( ent ) then
+			ECS.SavedSelections[ ply ][ name ][ ent ] = nil
+			continue
+		end
+
+		ECS.Selections[ ply ][ ent ] = info		
+		ent:SetRenderMode( 4 )
+		ent:SetColor( ECS.SelectColor )
+	end
+end )
+

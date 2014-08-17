@@ -1,7 +1,7 @@
 ----
 -- This is a development section for players who wish to add their own commands to ECS.
 
-local SelectColor = Color(255, 0, 0, 127)
+ECS.SelectColor = Color(255, 0, 0, 127)
 
 ECS.Whitelist = {
 	"prop_physics",
@@ -154,8 +154,8 @@ end
 function ECS.AddEnt( ply, ent )
 	ECS.Selections[ ply ] = ECS.GetSelection( ply )
 
-	if not ECS.HasRights( ply, ent ) then return false end
-	if ECS.IsSelected( ply, ent ) then return false end
+	if not ECS.HasRights( ply, ent ) then return end
+	if ECS.IsSelected( ply, ent ) then return end
 
 	ECS.Selections[ ply ][ ent ] = {
 		Color = ent:GetColor(),
@@ -163,7 +163,7 @@ function ECS.AddEnt( ply, ent )
 	}
 
 	ent:SetRenderMode( 4 )
-	ent:SetColor( SelectColor )
+	ent:SetColor( ECS.SelectColor )
 end
 
 ----
@@ -224,4 +224,3 @@ hook.Add( "EntityRemoved", "ECS.OnEntRemove", function( ent )
 		end
 	end
 end )
-

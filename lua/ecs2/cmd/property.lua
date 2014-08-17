@@ -113,11 +113,11 @@ end )
 -- @param G Green color component.
 -- @param B Blue color component.
 -- @param A Alpha color component (optional).
-ECS.NewCommand( "e_setcolor", 4, function ( ply, args )
+ECS.NewCommand( "e_color", 4, function ( ply, args )
 	local color = ECS.GetColor( args )
 	local alpha = -1
-	if args[1] then 
-		alpha = math.Clamp( tonumber( args[1] ), 0, 255 )
+	if args[4] then 
+		alpha = math.Clamp( tonumber( args[4] ), 0, 255 )
 		color.a = alpha
 	end
 
@@ -125,7 +125,7 @@ ECS.NewCommand( "e_setcolor", 4, function ( ply, args )
 		for ent, info in pairs( ECS.GetSelection( ply ) ) do
 			info.Color = color
 			if alpha ~= -1 then 
-				info.Mode = alpha < 255 and 4 or 0 end
+				info.Mode = alpha < 255 and 4 or 0
 			end
 		end
 		return

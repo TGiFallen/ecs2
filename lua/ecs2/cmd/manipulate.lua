@@ -61,7 +61,7 @@ end )
 -- @param X
 -- @param Y
 -- @param Z
--- @param ent If you pass "ent" as a fourth argument, it will set the position to your aim entity's position offset by the given coordinates.
+-- @param arg Passing any argument here will set the position to your aim entity's position offset by the given coordinates.
 ECS.NewCommand( "e_setpos", 4, function ( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local center = Vector(0, 0, 0)
@@ -71,7 +71,7 @@ ECS.NewCommand( "e_setpos", 4, function ( ply, args )
 		center = center / ECS.GetSelectionCount( ply )
 
 		local newCenter = ECS.GetVector( args )
-		if string.lower( args[4] or "" ) == "ent" then
+		if args[4] then
 			local trace = ply:GetEyeTrace().Entity
 			if trace and ECS.HasRights( ply, trace ) then
 				newCenter = trace:LocalToWorld( trace:OBBCenter() ) + newCenter
@@ -99,7 +99,7 @@ end )
 -- @param X
 -- @param Y
 -- @param Z
--- @param local Boolean argument, if true the offset will be local to the entity.
+-- @param boolean 1/0. If true, the offset will be local to the entity.
 ECS.NewCommand( "e_move", 4, "Add pos to trace entity or selection. 4th bool arg for local.", function ( ply, args )
 	local moveLocal = args[4] or false
 
@@ -127,11 +127,11 @@ end )
 -- @param Pitch
 -- @param Yaw
 -- @param Roll
--- @param ent If you pass "ent" as a fourth argument, it will set the angle to your aim entity's angle offset by the given angle.
+-- @param arg Passing any argument here will set the angle to your aim entity's angle offset by the given angle.
 ECS.NewCommand( "e_setang", 4, "Set ang of trace entity or selection. 4th arg \"ent\" to copy trace entity.", function ( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local newAngle = ECS.GetAngle( args )
-		if string.lower( args[4] or "" ) == "ent" then
+		if args[4] then
 			local trace = ply:GetEyeTrace().Entity
 			if trace and ECS.HasRights( ply, trace ) then
 				newAngle = trace:LocalToWorldAngles( trace:GetAngles() + newAngle )
@@ -159,7 +159,7 @@ end )
 -- @param X
 -- @param Y
 -- @param Z
--- @param local Boolean argument, if true the offset will be local to the entity.
+-- @param boolean 1/0. If true, the offset will be local to the entity.
 ECS.NewCommand( "e_addrot", 4, "Add ang of trace entity or selection. 4th arg for local.", function ( ply, args )
 	local rotateLocal = args[4] or false
 

@@ -82,7 +82,7 @@ end )
 
 ----
 -- Welds your selection to your aim entity.
--- @function e_nocollide
+-- @function e_weld
 -- @param forceLimit Force limit for the weld.
 ECS.NewCommand( "e_weld", 1, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
