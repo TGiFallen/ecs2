@@ -23,11 +23,11 @@ end
 
 ----
 -- Removes given constraint type from entity.
--- @function e_rc
+-- @function ecs rc
 -- @tparam string type Type of constraint to remove. "all" will remove all constraints. Not case-sensitive.
 -- Valid Types: All, AdvBallsocket, Axis, Ballsocket, Elastic, NoCollide, Rope, Slider, Weld
--- @usage e_rc all // This will remove all constraints from every entity in your selection.
-ECS.NewCommand( "e_rc", 1, function ( ply, args )
+-- @usage ecs rc all // This will remove all constraints from every entity in your selection.
+ECS.NewCommand( "rc", 1, function ( ply, args )
 	if not ValidType( string.lower( args[1] or "" ) ) then return false end
 
 	local constraintType = ECS.ConstraintTypes[ string.lower( args[1] ) ]
@@ -47,11 +47,11 @@ end )
 
 ----
 -- Removes all collision from your aim entity (or your selection if you have any entities selected).
--- @function e_nocollideall 
+-- @function ecs nocollideall 
 -- @tparam boolean enable/disable If true, this will re-enable collisions.
--- @usage e_nocollideall 0 // This will disable collisions for every entity in your selection.
+-- @usage ecs nocollideall 0 // This will disable collisions for every entity in your selection.
 -- @usage e-nocollideall // This will also disable collisions for every entity in your selection.
-ECS.NewCommand( "e_nocollideall", 1, function( ply, args )
+ECS.NewCommand( "nocollideall", 1, function( ply, args )
 	local group = COLLISION_GROUP_NONE
 	if args[1] then group = COLLISION_GROUP_WORLD end
 
@@ -70,8 +70,8 @@ end )
 
 ----
 -- Nocollides your selection to your aim entity.
--- @function e_nocollide
-ECS.NewCommand( "e_nocollide", 0, function( ply, args )
+-- @function ecs nocollide
+ECS.NewCommand( "nocollide", 0, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local trace = ply:GetEyeTrace().Entity
 		if trace and ECS.HasRights( ply, trace ) then
@@ -85,9 +85,9 @@ end )
 
 ----
 -- Welds your selection to your aim entity.
--- @function e_weld
+-- @function ecs weld
 -- @tparam[opt=0] number forceLimit Force limit for the weld.
-ECS.NewCommand( "e_weld", 1, function( ply, args )
+ECS.NewCommand( "weld", 1, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local trace = ply:GetEyeTrace().Entity
 		if trace and ECS.HasRights( ply, trace ) then
@@ -102,8 +102,8 @@ end )
 
 ----
 -- Parents your selection to your aim entity.
--- @function e_parent
-ECS.NewCommand( "e_parent", 0, function( ply, args )
+-- @function ecs parent
+ECS.NewCommand( "parent", 0, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local trace = ply:GetEyeTrace().Entity
 		if trace and ECS.HasRights( ply, trace ) then
@@ -125,7 +125,7 @@ end )
 
 ----
 -- Unparents your selection.
--- @function e_unparent
+-- @function ecs unparent
 local function Unparent( ent )
 	if not ent:GetParent() then return false end
 
@@ -145,7 +145,7 @@ local function Unparent( ent )
 	end
 end
 
-ECS.NewCommand( "e_unparent", 0, function( ply, args )
+ECS.NewCommand( "unparent", 0, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		for ent, info in pairs( ECS.GetSelection( ply ) ) do
 			Unparent( ent )

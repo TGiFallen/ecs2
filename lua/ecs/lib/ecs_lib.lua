@@ -1,3 +1,4 @@
+
 ----
 -- This is a development section for players who wish to add their own commands to ECS.
 
@@ -11,67 +12,39 @@ ECS.Whitelist = {
 }
 
 ----
--- Converts argument table to a color.
--- @function ECS.GetColor
--- @param args Argument table.
--- @return Color( Arg1, Arg2, Arg3 )
-function ECS.GetColor( args )
-	return Color( tonumber(args[1]) or 255, tonumber(args[2]) or 255, tonumber(args[3]) or 255 )
-end
-
-----
--- Converts argument table to a vector.
--- @function ECS.GetVector
--- @param args Argument table.
--- @return Vector( Arg1, Arg2, Arg3 )
-function ECS.GetVector( args )
-	return Vector( tonumber(args[1]) or 0, tonumber(args[2]) or 0, tonumber(args[3]) or 0 )
-end
-
-----
--- Converts argument table to a angle.
--- @function ECS.GetAngle
--- @param args Argument table.
--- @return Angle( Arg1, Arg2, Arg3 )
-function ECS.GetAngle( args )
-	return Angle( tonumber(args[1]) or 0, tonumber(args[2]) or 0, tonumber(args[3]) or 0 )
-end
-
-----
 -- Creates a new ECS command.
--- @function ECS.NewCommand
--- @param name The name of the console command.
--- @param argCount The maximum number of arguments.
--- @param func The serverside function the command will execute.
+-- @function ECS.AddCommand
+-- @tparam string name The name of the console command.
+-- @tparam number argCount The maximum number of arguments.
+-- @tparam function func The serverside function the command will execute.
 function ECS.NewCommand( name, argCount, func )
 	ECS.Commands[ name ] = {
 		argCount = argCount,
-		func = func,
+		func = func
 	}
 end
 
 ----
 -- Reloads ECS for all players.
--- @function ECS.ReloadAll
-function ECS.ReloadAll()
-	for name, info in pairs( ECS.Commands ) do
-		net.Start( "ECS.SendToClient" )
-			net.WriteString( name )
-			net.WriteInt( info.argCount, 32 )
-		net.Broadcast()
-	end
-end
-
-----
--- Reloads ECS for specified player.
 -- @function ECS.Reload
--- @param player
-function ECS.Reload( ply )
-	for name, info in pairs( ECS.Commands ) do
+-- @tparam[opt=nil] string name If a command name is given, it will only reload that command.
+-- @tparam[opt=nil] player ply If a player is given, it will only reload for that player.
+function ECS.Reload( name, ply )
+	if name then
+		if ECS.Commands[ name ] then
+			net.Start( "ECS.SendToClient" )
+				net.WriteString( name )
+				net.WriteInt( ECS.Commands[ name ].argCount, 32 )
+			if ply then net.Send( ply ) else net.Broadcast() end
+		end
+		return
+	end
+
+	for cmd, data in pairs( ECS.Commands ) do
 		net.Start( "ECS.SendToClient" )
-			net.WriteString( name )
-			net.WriteInt( info.argCount, 32 )
-		net.Send( ply )
+			net.WriteString( cmd )
+			net.WriteInt( data.argCount, 32 )
+		if ply then net.Send( ply ) else net.Broadcast() end
 	end
 end
 
@@ -87,10 +60,11 @@ net.Receive( "ECS.SendToServer", function( len, ply )
 	ECS.Commands[ name ].func( ply, args )
 end )
 
+
 ----
 -- Checks if given entity's class is whitelisted by ECS.
 -- @function ECS.Filter
--- @param ent Entity to check.
+-- @tparam entity ent Entity to check.
 function ECS.Filter( ent )
 	local entClass = ent:GetClass()
 
@@ -105,7 +79,7 @@ end
 ----
 -- Returns the owner of the given entity.
 -- @function ECS.GetOwner
--- @param ent Entity to check.
+-- @tparam entity ent Entity to check.
 -- @return player
 function ECS.GetOwner( ent )
 	if CPPI then
@@ -118,8 +92,8 @@ end
 ----
 -- Determines if given player has rights to given entity.
 -- @function ECS.HasRights
--- @param ply Player to check.
--- @param ent Entity to check.
+-- @tparam player ply Player to check.
+-- @tparam entity ent Entity to check.
 -- @return bool
 function ECS.HasRights( ply, ent )
 	if not ECS.Filter( ent ) then return false end
@@ -134,7 +108,7 @@ end
 ----
 -- Returns the selection table of given player.
 -- @function ECS.GetSelection
--- @param ply Player to check.
+-- @tparam player ply Player to check.
 -- @return player
 function ECS.GetSelection( ply )
 	return ECS.Selections[ ply ] or { }
@@ -143,7 +117,7 @@ end
 ----
 -- Returns the number of entities selected by given player.
 -- @function ECS.GetSelectionCount
--- @param ply Player to check.
+-- @tparam player ply Player to check.
 -- @return number
 function ECS.GetSelectionCount( ply )
 	return table.Count( ECS.GetSelection( ply ) )
@@ -152,8 +126,8 @@ end
 ----
 -- Determines if given entity is currently selected by given player.
 -- @function ECS.IsSelected
--- @param ply Player to check.
--- @param ent Entity to check.
+-- @tparam player ply Player to check.
+-- @tparam entity ent Entity to check.
 -- @return bool
 function ECS.IsSelected( ply, ent )
 	return ECS.GetSelection( ply )[ ent ] and true or false
@@ -162,8 +136,8 @@ end
 ----
 -- Adds given entity to given player's selection table. Checks for ownership and if the entity is already selected.
 -- @function ECS.AddEnt
--- @param ply Player to add entity to.
--- @param ent Entity to add.
+-- @tparam player ply Player to add entity to.
+-- @tparam entity ent Entity to add.
 function ECS.AddEnt( ply, ent )
 	ECS.Selections[ ply ] = ECS.GetSelection( ply )
 
@@ -182,8 +156,8 @@ end
 ----
 -- Adds given table of entities to given player's selection table. Checks for ownership and if the entities are already selected.
 -- @function ECS.AddEnts
--- @param ply Player to add entities to.
--- @param ent Entity table to add.
+-- @tparam player ply Player to add entities to.
+-- @tparam entity ent Entity table to add.
 function ECS.AddEnts( ply, entTable )
 	for _, ent in pairs( entTable ) do
 		ECS.AddEnt( ply, ent )
@@ -193,8 +167,8 @@ end
 ----
 -- Removes given entity from given player's selection table.
 -- @function ECS.RemoveEnt
--- @param ply Player to remove entity from.
--- @param ent Entity to remove.
+-- @tparam player ply Player to remove entity from.
+-- @tparam entity ent Entity to remove.
 function ECS.RemoveEnt( ply, ent )
 	ECS.Selections[ ply ] = ECS.GetSelection( ply )
 
@@ -211,8 +185,8 @@ end
 ----
 -- Removes given table of entities from given player's selection table.
 -- @function ECS.RemoveEnts
--- @param ply Player to remove entities from.
--- @param ent Entity table to remove.
+-- @tparam player ply Player to remove entities from.
+-- @tparam entity ent Entity table to remove.
 function ECS.RemoveEnts( ply, entTable )
 	for _, ent in pairs( entTable ) do
 		ECS.RemoveEnt( ply, ent )
@@ -229,3 +203,29 @@ function ECS.RemoveAll( ply )
 	end
 end
 
+----
+-- Converts argument table to a color.
+-- @function ECS.GetColor
+-- @tparam table args Argument table.
+-- @return Color( Arg1, Arg2, Arg3 )
+function ECS.GetColor( args )
+	return Color( tonumber(args[1]) or 255, tonumber(args[2]) or 255, tonumber(args[3]) or 255 )
+end
+
+----
+-- Converts argument table to a vector.
+-- @function ECS.GetVector
+-- @tparam table args Argument table.
+-- @return Vector( Arg1, Arg2, Arg3 )
+function ECS.GetVector( args )
+	return Vector( tonumber(args[1]) or 0, tonumber(args[2]) or 0, tonumber(args[3]) or 0 )
+end
+
+----
+-- Converts argument table to a angle.
+-- @function ECS.GetAngle
+-- @tparam table args Argument table.
+-- @return Angle( Arg1, Arg2, Arg3 )
+function ECS.GetAngle( args )
+	return Angle( tonumber(args[1]) or 0, tonumber(args[2]) or 0, tonumber(args[3]) or 0 )
+end
