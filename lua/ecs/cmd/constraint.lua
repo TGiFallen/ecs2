@@ -23,7 +23,7 @@ end
 
 ----
 -- Removes given constraint type from entity.
--- @function ecs rc
+-- @function rc
 -- @tparam string type Type of constraint to remove. "all" will remove all constraints. Not case-sensitive.
 -- Valid Types: All, AdvBallsocket, Axis, Ballsocket, Elastic, NoCollide, Rope, Slider, Weld
 -- @usage ecs rc all // This will remove all constraints from every entity in your selection.
@@ -47,8 +47,8 @@ end )
 
 ----
 -- Removes all collision from your aim entity (or your selection if you have any entities selected).
--- @function ecs nocollideall 
--- @tparam boolean enable/disable If true, this will re-enable collisions.
+-- @function nocollideall 
+-- @tparam boolean enable If true, this will re-enable collisions.
 -- @usage ecs nocollideall 0 // This will disable collisions for every entity in your selection.
 -- @usage e-nocollideall // This will also disable collisions for every entity in your selection.
 ECS.NewCommand( "nocollideall", 1, function( ply, args )
@@ -70,7 +70,7 @@ end )
 
 ----
 -- Nocollides your selection to your aim entity.
--- @function ecs nocollide
+-- @function nocollide
 ECS.NewCommand( "nocollide", 0, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local trace = ply:GetEyeTrace().Entity
@@ -85,7 +85,7 @@ end )
 
 ----
 -- Welds your selection to your aim entity.
--- @function ecs weld
+-- @function weld
 -- @tparam[opt=0] number forceLimit Force limit for the weld.
 ECS.NewCommand( "weld", 1, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
@@ -102,7 +102,7 @@ end )
 
 ----
 -- Parents your selection to your aim entity.
--- @function ecs parent
+-- @function parent
 ECS.NewCommand( "parent", 0, function( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		local trace = ply:GetEyeTrace().Entity
@@ -125,7 +125,7 @@ end )
 
 ----
 -- Unparents your selection.
--- @function ecs unparent
+-- @function unparent
 local function Unparent( ent )
 	if not ent:GetParent() then return false end
 

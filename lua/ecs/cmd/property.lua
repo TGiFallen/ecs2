@@ -7,7 +7,7 @@ local construct = construct
 
 ----
 -- Sets the mass of your aim entity (or your selection if you have any entities selected).
--- @function ecs mass
+-- @function mass
 -- @tparam number mass 
 -- @usage ecs mass 300 // This will set the mass of all entities in your selection to 300.
 ECS.NewCommand( "mass", 1, function ( ply, args )
@@ -37,8 +37,8 @@ end )
 
 ----
 -- Toggles the gravity of your aim entity (or your selection if you have any entities selected).
--- @function ecs gravity
--- @tparam boolean enable/disable
+-- @function gravity
+-- @tparam boolean enable
 -- @usage ecs gravity 0 // This will disable the gravity of all entities in your selection.
 ECS.NewCommand( "gravity", 1, function ( ply, args )
 	local data = { GravityToggle = true }
@@ -60,8 +60,8 @@ end )
 
 ----
 -- Toggles the drag of your aim entity (or your selection if you have any entities selected).
--- @function ecs drag
--- @tparam boolean enable/disable
+-- @function drag
+-- @tparam boolean enable
 -- @usage ecs drag 0 // This will disable the drag of all entities in your selection.
 ECS.NewCommand( "mass", 1, function ( ply, args )
 	local data = { DragOnOff = true }
@@ -91,7 +91,7 @@ end )
 
 ----
 -- Sets the physical property of your aim entity (or your selection if you have any entities selected).
--- @function ecs physprop
+-- @function physprop
 -- @tparam string physprop Physprop material to set entities to.
 -- @usage ecs physprop jeeptire // This will set the physprop material of all entities in your selection to "jeeptire".
 ECS.NewCommand( "physprop", 1, function ( ply, args )
@@ -112,7 +112,7 @@ end )
 
 ----
 -- Sets the color property of your aim entity (or your selection if you have any entities selected).
--- @function ecs color
+-- @function color
 -- @tparam number r Red color component.
 -- @tparam number g Green color component.
 -- @tparam number b Blue color component.
@@ -145,7 +145,7 @@ end )
 
 ----
 -- Sets the material of your aim entity (or your selection if you have any entities selected).
--- @function ecs material
+-- @function material
 -- @tparam string material Material to set entities to. <b>DOUBLE CHECK PATH, YOU MIGHT LAG IF YOU PROVIDE AN INVALID MATERIAL.</b>
 -- @usage ecs material some/material/path // This will set the material of all entities in your selection to "some/material/path".
 ECS.NewCommand( "material", 1, function ( ply, args )

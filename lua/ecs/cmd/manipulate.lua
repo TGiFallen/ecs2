@@ -23,7 +23,7 @@ end
 
 ----
 -- Removes your aim (or your selection if you have any entities selected).
--- @function ecs remove
+-- @function remove
 ECS.NewCommand( "remove", 0, function ( ply, args )
 	if ECS.GetSelectionCount( ply ) > 0 then
 		for ent, info in pairs( ECS.GetSelection( ply ) ) do
@@ -38,8 +38,8 @@ end )
 
 ----
 -- Freezes or unfreezes your aim (or your selection if you have any entities selected).
--- @function ecs freeze
--- @tparam boolean freeze/unfreeze
+-- @function freeze
+-- @tparam boolean freeze
 -- @usage ecs freeze 0 // This will unfreeze all entities in your selection.
 -- @usage ecs freeze 1 // This will freeze all entities in your selection.
 ECS.NewCommand( "freeze", 1, function ( ply, args )
@@ -59,7 +59,7 @@ end )
 
 ----
 -- Sets the position of your aim entity (or your selection if you have any entities selected) to the given coordinates. 
--- @function ecs setpos
+-- @function setpos
 -- @tparam number x
 -- @tparam number y
 -- @tparam number z
@@ -99,11 +99,11 @@ end )
 
 ----
 -- Offsets your aim entity's (or your selection if you have any entities selected) position by the given coordinates.
--- @function ecs move
+-- @function move
 -- @tparam number x
 -- @tparam number y
 -- @tparam number z
--- @tparam boolean local/global. If true, the offset will be local to the entity.
+-- @tparam boolean local. If true, the offset will be local to the entity.
 -- @usage ecs move 0 0 50 1 // This will move your entire selection 50 units relative to each entity's Z axis.
 -- @usage ecs move 0 0 50 // This will move your entire selection 50 units relative to the world's Z axis.
 ECS.NewCommand( "move", 4, function ( ply, args )
@@ -129,7 +129,7 @@ end )
 
 ----
 -- Sets your aim entity's (or you rselection if you have any entities selected) angle to the given angle.
--- @function ecs setang
+-- @function setang
 -- @tparam number pitch
 -- @tparam number yaw
 -- @tparam number roll
@@ -163,11 +163,11 @@ end )
 
 ----
 -- Offsets your aim entity's (or your selection if you have any entities selected) angle by the given angle.
--- @function ecs addrot
+-- @function addrot
 -- @tparam number x
 -- @tparam number y
 -- @tparam number z
--- @tparam boolean local/global If true, the offset will be local to the entity.
+-- @tparam boolean local If true, the offset will be local to the entity.
 -- @usage ecs addrot 0 45 0 1 // This will rotate each entity in your selection by 45 yaw local to itself.
 -- @usage ecs addrot 0 45 0 // This will rotate each entity in your selection by 45 yaw local to the world.
 ECS.NewCommand( "addrot", 4, function ( ply, args )

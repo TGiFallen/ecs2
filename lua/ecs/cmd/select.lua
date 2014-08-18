@@ -3,7 +3,7 @@
 
 ----
 -- Adds your aim entity to your current selection.
--- @function ecs select
+-- @function select
 -- @tparam[opt=false] string all Adds all entities you own (or have rights to) to your current selection.
 -- @usage ecs select all // This will add all available entities to your selection.
 -- @usage ecs select // This will add your aim entity to your selection.
@@ -19,8 +19,8 @@ end )
 
 ----
 -- Removes your aim entity from your current selection.
--- @function ecs deselect
--- @tparam[opt=false] string all Removes all entities from your selection.
+-- @function deselect
+-- @tparam[opt=nil] string all Removes all entities from your selection.
 -- @usage ecs deselect all // This will clear all entities from your selection.
 -- @usage ecs deselect // This will remove your aim entity from your selection.
 ECS.NewCommand( "deselect", 1, function ( ply, args )
@@ -35,7 +35,7 @@ end )
 
 ----
 -- Adds all entities within given radius of your aim position to your current selection.
--- @function ecs selectsphere
+-- @function selectsphere
 -- @tparam number radius The radius of the sphere to search for entities, originating from your aim position
 -- @usage ecs selectsphere 300 // This will add all available entities within 300 units of your aim position to your current selection.
 ECS.NewCommand( "selectsphere", 1, function( ply, args )
@@ -47,7 +47,7 @@ end )
 
 ----
 -- Removes all entities within given radius of your aim position from your current selection.
--- @function ecs deselectsphere
+-- @function deselectsphere
 -- @tparam number radius The radius of the sphere to search for entities, originating from your aim position
 -- @usage ecs deselectsphere 300 // This will remove all entities within 300 units of your aim position from your current selection.
 ECS.NewCommand( "deselectsphere", 1, function( ply, args )
@@ -59,7 +59,7 @@ end )
 
 ----
 -- Saves your current selection for later use. Does not persist through sessions.
--- @function ecs selectsave
+-- @function selectsave
 -- @tparam string name The name to use for your saved selection.
 -- @tparam[opt=false] boolean addToSave If true, the selection will be added to the save, instead of overwriting it.
 -- @usage ecs selectsave test 1 // This will add your current selection to the "test" save.
@@ -82,7 +82,7 @@ end )
 
 ----
 -- Loads given saved selection.
--- @function ecs selectload
+-- @function selectload
 -- @tparam string name The name to use for your saved selection.
 -- @tparam[opt=false] boolean addToSelection If true, the save will be added to your current selection, instead of overwriting it.
 -- @usage ecs selectload test 1 // This will add the "test" save to your current selection.
