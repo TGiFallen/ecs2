@@ -2,8 +2,6 @@
 ----
 -- This is a development section for players who wish to add their own commands to ECS.
 
-ECS.SelectColor = Color(255, 0, 0, 127)
-
 ECS.Whitelist = {
 	"prop_physics",
 	"prop_vehicle_prisoner_pod",
@@ -134,11 +132,24 @@ function ECS.IsSelected( ply, ent )
 end
 
 ----
+-- Retrieves the player's ecs selection color.
+-- @function ECS.GetPlyColor
+-- @tparam player ply
+-- @return color
+function ECS.GetPlyColor( ply )
+	return Color(
+			ply:GetInfoNum( "ecs_selectioncolor_r", 255 ), 
+			ply:GetInfoNum( "ecs_selectioncolor_g", 0 ), 
+			ply:GetInfoNum( "ecs_selectioncolor_b", 0 ), 
+			ply:GetInfoNum( "ecs_selectioncolor_a", 127 ) )
+end
+
+----
 -- Adds given entity to given player's selection table. Checks for ownership and if the entity is already selected.
 -- @function ECS.AddEnt
 -- @tparam player ply Player to add entity to.
 -- @tparam entity ent Entity to add.
-function ECS.AddEnt( ply, ent )
+function ECS.AddEnt( ply, ent, color )
 	ECS.Selections[ ply ] = ECS.GetSelection( ply )
 
 	if not ECS.HasRights( ply, ent ) then return end
@@ -150,7 +161,7 @@ function ECS.AddEnt( ply, ent )
 	}
 
 	ent:SetRenderMode( 4 )
-	ent:SetColor( ECS.SelectColor )
+	if color then ent:SetColor( color ) else ent:SetColor( ECS.GetPlyColor( ply ) ) end
 end
 
 ----
@@ -159,8 +170,9 @@ end
 -- @tparam player ply Player to add entities to.
 -- @tparam entity ent Entity table to add.
 function ECS.AddEnts( ply, entTable )
+	local color = ECS.GetPlyColor( ply )
 	for _, ent in pairs( entTable ) do
-		ECS.AddEnt( ply, ent )
+		ECS.AddEnt( ply, ent, color )
 	end
 end
 

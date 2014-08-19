@@ -51,3 +51,38 @@ function ECS.DoAutoComplete( cmd, args )
 end
 
 concommand.Add( "ecs", ECS.DoCommand, ECS.DoAutoComplete )
+
+
+
+
+
+-- ECS Settings Panel
+CreateClientConVar( "ecs_debugmsgs", 1, true, true )
+
+CreateClientConVar( "ecs_selectioncolor_r", 255, true, true )
+CreateClientConVar( "ecs_selectioncolor_g", 0, true, true )
+CreateClientConVar( "ecs_selectioncolor_b", 0, true, true )
+CreateClientConVar( "ecs_selectioncolor_a", 127, true, true )
+
+
+local function BuildCPanel( CPanel )
+
+	local DebugMsgs = CPanel:AddControl( "Checkbox", {
+		Label = "Enable Debug Messages",
+		Command = "ecs_debugmsgs"
+	} )
+
+	local ColorSelect = CPanel:AddControl( "Color", { 
+		Label = "Entity Selection Color", 
+
+		Red   = "ecs_selectioncolor_r",  
+		Green = "ecs_selectioncolor_g",  
+		Blue  = "ecs_selectioncolor_b",  
+		Alpha = "ecs_selectioncolor_a",  
+	} )
+
+end
+
+hook.Add( "PopulateToolMenu", "ECS.BuildMenu", function ()
+	spawnmenu.AddToolMenuOption( "Utilities", "User", "Entity Command Suite", "#Entity Command Suite", "", "", BuildCPanel, nil )
+end )

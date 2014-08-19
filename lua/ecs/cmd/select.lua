@@ -17,7 +17,6 @@ ECS.NewCommand( "select", 1, function ( ply, args )
 	if IsValid( trace ) then ECS.AddEnt( ply, trace ) end
 end )
 
-----
 -- Removes your aim entity from your current selection.
 -- @function deselect
 -- @tparam[opt=nil] string all Removes all entities from your selection.
@@ -97,6 +96,7 @@ ECS.NewCommand( "selectload", 2, function ( ply, args )
 	local name = args[1]
 	ECS.Selections[ ply ] = ECS.Selections[ ply ] or { }
 
+	local color = ECS.GetPlyColor( ply )
 	for ent, info in pairs( ECS.SavedSelections[ ply ][ name ] ) do
 		if not IsValid( ent ) then
 			ECS.SavedSelections[ ply ][ name ][ ent ] = nil
@@ -105,10 +105,9 @@ ECS.NewCommand( "selectload", 2, function ( ply, args )
 
 		ECS.Selections[ ply ][ ent ] = info		
 		ent:SetRenderMode( 4 )
-		ent:SetColor( ECS.SelectColor )
+		ent:SetColor( color )
 	end
 end )
-
 
 ----
 -- Selects all child props attached to your aim entity.
@@ -119,9 +118,10 @@ ECS.NewCommand( "selectchildren", 1, function ( ply, args )
 	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 		if args[2] then ECS.RemoveAll( ply ) end
 
+		local color = ECS.GetPlyColor( ply )
 		for _, ent in pairs ( ents.GetAll() ) do
 			if ent:GetParent() ~= trace then continue end
-			ECS.AddEnt( ply, ent )
+			ECS.AddEnt( ply, ent, color )
 		end
 	end
 end )
