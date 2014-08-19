@@ -125,3 +125,83 @@ ECS.NewCommand( "selectchildren", 1, function ( ply, args )
 		end
 	end
 end )
+
+
+
+/*
+local Select = { }
+local Deselect = { }
+
+Select[ "all" ] = function ( ply, args )
+	ECS.AddEnts( ply, ents.GetAll() )
+end
+
+Select[ "sphere" ] = function ( ply, args )
+	if tonumber( args[2] or "0" ) > 0 then
+		local find = ents.FindInSphere( ply:GetEyeTrace().HitPos, tonumber( args[2] ) )
+		ECS.AddEnts( ply, find or { } )
+	end
+end
+
+Select[ "children" ] = function ( ply, args )
+	local trace = ply:GetEyeTrace().Entity
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
+		if args[2] then ECS.RemoveAll( ply ) end
+
+		for _, ent in pairs ( ents.GetAll() ) do
+			if ent:GetParent() ~= trace then continue end
+			ECS.AddEnt( ply, ent )
+		end
+	end	
+end
+
+Select[ "save" ] = function ( ply, args )
+	if not args[2] then return end
+
+	if ECS.GetSelectionCount( ply ) > 0 then
+		ECS.SavedSelections[ ply ] = ECS.SavedSelections[ ply ] or { }
+
+		local name = args[2]
+		if args[3] then
+			ECS.SavedSelections[ ply ][ name ] = ECS.SavedSelections[ ply ][ name ] or { }
+			table.Merge( ECS.SavedSelections[ ply ][ name ], ECS.GetSelection( ply ) )
+		else
+			ECS.SavedSelections[ ply ][ name ] = table.Copy( ECS.GetSelection( ply ) )
+		end
+	end	
+end
+
+Select[ "load" ] = function ( ply, args )
+	if not args[2] then return end
+	if not ECS.SavedSelections[ ply ] then return end
+	if not ECS.SavedSelections[ ply ][ args[2] ] then return end
+
+	if not args[3] then ECS.RemoveAll( ply ) end
+	
+	local name = args[2]
+	ECS.Selections[ ply ] = ECS.Selections[ ply ] or { }
+
+	for ent, info in pairs( ECS.SavedSelections[ ply ][ name ] ) do
+		if not IsValid( ent ) then
+			ECS.SavedSelections[ ply ][ name ][ ent ] = nil
+			continue
+		end
+
+		ECS.Selections[ ply ][ ent ] = info		
+		ent:SetRenderMode( 4 )
+		ent:SetColor( ECS.SelectColor )
+	end
+end
+
+ECS.NewCommand( "select", 3, function ( ply, args )
+	if not args[1] then 
+		local trace = ply:GetEyeTrace().Entity
+		if IsValid( trace ) then ECS.AddEnt( ply, trace ) end
+
+		return 
+	end
+
+	if not Select[ args[1] ] then return end
+	Select[ args[1] ]( ply, args )
+end )
+*/
