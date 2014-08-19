@@ -7,14 +7,14 @@
 -- @tparam[opt=false] string all Adds all entities you own (or have rights to) to your current selection.
 -- @usage ecs select all // This will add all available entities to your selection.
 -- @usage ecs select // This will add your aim entity to your selection.
-ECS.NewCommand( "select", 1, function( ply, args ) 
+ECS.NewCommand( "select", 1, function ( ply, args ) 
 	if string.lower( args[1] or "" ) == "all" then
 		ECS.AddEnts( ply, ents.GetAll() )
 		return
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace then ECS.AddEnt( ply, trace ) end
+	if IsValid( trace ) then ECS.AddEnt( ply, trace ) end
 end )
 
 ----
@@ -30,7 +30,7 @@ ECS.NewCommand( "deselect", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace then ECS.RemoveEnt( ply, trace ) end
+	if IsValid( trace ) then ECS.RemoveEnt( ply, trace ) end
 end )
 
 ----
@@ -38,7 +38,7 @@ end )
 -- @function selectsphere
 -- @tparam number radius The radius of the sphere to search for entities, originating from your aim position
 -- @usage ecs selectsphere 300 // This will add all available entities within 300 units of your aim position to your current selection.
-ECS.NewCommand( "selectsphere", 1, function( ply, args )
+ECS.NewCommand( "selectsphere", 1, function ( ply, args )
 	if tonumber( args[1] or "0" ) > 0 then
 		local find = ents.FindInSphere( ply:GetEyeTrace().HitPos, tonumber( args[1] ) )
 		ECS.AddEnts( ply, find or { } )
@@ -50,7 +50,7 @@ end )
 -- @function deselectsphere
 -- @tparam number radius The radius of the sphere to search for entities, originating from your aim position
 -- @usage ecs deselectsphere 300 // This will remove all entities within 300 units of your aim position from your current selection.
-ECS.NewCommand( "deselectsphere", 1, function( ply, args )
+ECS.NewCommand( "deselectsphere", 1, function ( ply, args )
 	if tonumber( args[1] or "0" ) > 0 then
 		local find = ents.FindInSphere( ply:GetEyeTrace().HitPos, tonumber( args[1] ) )
 		ECS.RemoveEnts( ply, find or { } )
@@ -64,7 +64,7 @@ end )
 -- @tparam[opt=false] boolean addToSave If true, the selection will be added to the save, instead of overwriting it.
 -- @usage ecs selectsave test 1 // This will add your current selection to the "test" save.
 -- @usage ecs selectsave test // This will replace the "test" save with your current selection.
-ECS.NewCommand( "selectsave", 2, function( ply, args ) 
+ECS.NewCommand( "selectsave", 2, function ( ply, args ) 
 	if not args[1] then return end
 
 	if ECS.GetSelectionCount( ply ) > 0 then
@@ -87,7 +87,7 @@ end )
 -- @tparam[opt=false] boolean addToSelection If true, the save will be added to your current selection, instead of overwriting it.
 -- @usage ecs selectload test 1 // This will add the "test" save to your current selection.
 -- @usage ecs selectload test // This will replace your current selection with the "test" save.
-ECS.NewCommand( "selectload", 2, function( ply, args ) 
+ECS.NewCommand( "selectload", 2, function ( ply, args ) 
 	if not args[1] then return end
 	if not ECS.SavedSelections[ ply ] then return end
 	if not ECS.SavedSelections[ ply ][ args[1] ] then return end
@@ -109,3 +109,19 @@ ECS.NewCommand( "selectload", 2, function( ply, args )
 	end
 end )
 
+
+----
+-- Selects all child props attached to your aim entity.
+-- @tparam[opt=false] boolean addToSelection // If true, the child props will overwrite your current selection, instead of adding to it.
+-- @usage ecs selectchildren 1 // This will replace your current selection with all the child props of your aim entity.
+ECS.NewCommand( "selectchildren", 1, function ( ply, args )
+	local trace = ply:GetEyeTrace().Entity
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
+		if args[2] then ECS.RemoveAll( ply ) end
+
+		for _, ent in pairs ( ents.GetAll() ) do
+			if ent:GetParent() ~= trace then continue end
+			ECS.AddEnt( ply, ent )
+		end
+	end
+end )

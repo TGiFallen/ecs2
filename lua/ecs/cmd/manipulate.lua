@@ -33,7 +33,7 @@ ECS.NewCommand( "remove", 0, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then RemoveEnt( trace ) end
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then RemoveEnt( trace ) end
 end )
 
 ----
@@ -54,7 +54,7 @@ ECS.NewCommand( "freeze", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then EnableMovement( trace, bool ) end
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then EnableMovement( trace, bool ) end
 end )
 
 ----
@@ -77,7 +77,7 @@ ECS.NewCommand( "setpos", 4, function ( ply, args )
 		local newCenter = ECS.GetVector( args )
 		if args[4] then
 			local trace = ply:GetEyeTrace().Entity
-			if trace and ECS.HasRights( ply, trace ) then
+			if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 				newCenter = trace:LocalToWorld( trace:OBBCenter() ) + newCenter
 			end
 		end
@@ -91,7 +91,7 @@ ECS.NewCommand( "setpos", 4, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 		trace:SetPos( ECS.GetVector( args ) )
 		EnableMovement( trace, false ) 
 	end	
@@ -120,7 +120,7 @@ ECS.NewCommand( "move", 4, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 		local moveVec = ECS.GetVector( args )
 		trace:SetPos( moveLocal and trace:LocalToWorld( moveVec ) or trace:LocalToWorld( trace:OBBCenter() ) + moveVec )
 		EnableMovement( trace, false ) 
@@ -141,7 +141,7 @@ ECS.NewCommand( "setang", 4, function ( ply, args )
 		local newAngle = ECS.GetAngle( args )
 		if args[4] then
 			local trace = ply:GetEyeTrace().Entity
-			if trace and ECS.HasRights( ply, trace ) then
+			if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 				newAngle = trace:LocalToWorldAngles( trace:GetAngles() + newAngle )
 			end
 		end
@@ -155,7 +155,7 @@ ECS.NewCommand( "setang", 4, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 		trace:SetAngles( ECS.GetAngle( args ) )
 		EnableMovement( trace, false ) 
 	end	
@@ -184,9 +184,36 @@ ECS.NewCommand( "addrot", 4, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
 		local rotateAng = ECS.GetAngle( args )
 		trace:SetAngles( rotateLocal and trace:LocalToWorldAngles( rotateAng ) or trace:GetAngles() + rotateAng)
 		EnableMovement( trace, false ) 
 	end
+end )
+
+----
+-- Sets your aim entity's (or your selection if you have any entities selected) model to the given model
+-- @function model
+-- @tparam string modelPath -- wont do anything if the model doesn't exist on the server
+-- @usage ecs model models/hunter/blocks/cube025x025x025.mdl
+ECS.NewCommand( "model", 1, function ( ply, args )
+	if not args[1] then return end
+	if not util.IsValidModel( args[1] ) then return end
+
+	local model = args[1]
+
+	if ECS.GetSelectionCount( ply ) > 0 then
+		for ent, info in pairs( ECS.GetSelection( ply ) ) do
+			ent:SetModel( model )
+			ent:PhysicsInit( SOLID_VPHYSICS )
+		end
+
+		return
+	end
+
+	local trace = ply:GetEyeTrace().Entity
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then
+		trace:SetModel( model )
+		trace:PhysicsInit( SOLID_VPHYSICS )
+	end	
 end )

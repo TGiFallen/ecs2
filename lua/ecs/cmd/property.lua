@@ -26,7 +26,7 @@ ECS.NewCommand( "mass", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then 
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then 
 		local phys = trace:GetPhysicsObject()
 		if IsValid( phys ) then
 			trace:SetMass( mass )
@@ -52,7 +52,7 @@ ECS.NewCommand( "gravity", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then 
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then 
 		construct.SetPhysProp( ply, trace, 0, nil, data )
 	end
 end )
@@ -80,7 +80,7 @@ ECS.NewCommand( "mass", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then 
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then 
 		local phys = trace:GetPhysicsObject()
 		if IsValid( phys ) then
 			phys:EnableDrag( drag )
@@ -105,7 +105,7 @@ ECS.NewCommand( "physprop", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then 
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then 
 		construct.SetPhysProp( ply, trace, 0, nil, data )
 	end
 end )
@@ -137,7 +137,7 @@ ECS.NewCommand( "color", 4, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then 
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then 
 		if alpha ~= -1 then trace:SetRenderMode( alpha < 255 and 4 or 0 ) end
 		trace:SetColor( color )
 	end
@@ -161,7 +161,7 @@ ECS.NewCommand( "material", 1, function ( ply, args )
 	end
 
 	local trace = ply:GetEyeTrace().Entity
-	if trace and ECS.HasRights( ply, trace ) then 
+	if IsValid( trace ) and ECS.HasRights( ply, trace ) then 
 		trace:SetMaterial( mat )
 		duplicator.StoreEntityModifier( trace, "material", data )
 	end
