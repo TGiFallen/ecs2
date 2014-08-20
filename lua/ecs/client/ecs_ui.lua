@@ -40,11 +40,11 @@ local function CommandOverlay( ply, cmd, args )
 
 	-- Main Overlay Window
 	local Overlay = vgui.Create( "DFrame" )
-		Overlay:SetSize( 400, 200 )
+		Overlay:SetSize( 400, 100 )
 		Overlay:Center()
 		Overlay:SetTitle( "" )
 		Overlay:SetVisible( true )
-		Overlay:SetDraggable( false ) 
+		Overlay:SetDraggable( true ) 
 		Overlay:ShowCloseButton( false )
 		Overlay:MakePopup()
 
@@ -146,6 +146,50 @@ local function CommandOverlay( ply, cmd, args )
 		-- gui.OpenURL( "https://dl.dropboxusercontent.com/u/10388108/ecs_doc/index.html" )
 		-- http://maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/index01b1.html
 	end
+
+
+	-- Info Pane
+	local Info = vgui.Create( "DPanel", Overlay )
+		Info:SetSize( 120, 73 )
+		Info:SetPos( Overlay:GetWide() - 122, 25 )
+		Info:SetVisible( true )
+
+	Info.Paint = function ( self )
+		draw.RoundedBox( 0, 0, 0, self:GetWide(), self:GetTall(), Color(51, 51, 51) )
+		draw.RoundedBox( 0, 1, 1, self:GetWide() - 2, self:GetTall() - 2, Color(71, 81, 91) )
+
+		draw.SimpleTextOutlined( "Selected Ents: 999", "DermaDefaultBold", 4, 8, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
+		draw.SimpleTextOutlined( "Saved Selections: 0", "DermaDefaultBold", 4, 25, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
+	end
+
+	-- Command Bar
+	local CommandBar = vgui.Create( "DPanel", Overlay )
+		CommandBar:SetSize( 275, 30 )
+		CommandBar:SetPos( 2, 25 )
+		CommandBar:SetVisible( true )
+
+	local CommandText = vgui.Create( "DTextEntry", CommandBar )
+		CommandText:SetPos( 0, 0 )
+		CommandText:SetSize( CommandBar:GetWide(), CommandBar:GetTall() )
+		CommandText:SetText( "Please enter a command" )
+		CommandText:SelectAllOnFocus( true )
+		CommandText:RequestFocus() 
+
+	local Blink = 0
+	CommandText.Paint = function ( self )
+		draw.RoundedBox( 0, 0, 0, self:GetWide(), self:GetTall(), Color(51, 51, 51) )
+		draw.RoundedBox( 0, 1, 1, self:GetWide() - 2, self:GetTall() - 2, Color(71, 81, 91) )
+
+		Blink = (Blink + 1) % 30
+
+		draw.SimpleTextOutlined( self:GetValue() .. ( Blink > 15 and " ►" or "" ), "DermaDefaultBold", 4, 8, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
+	end
+
+	CommandText.OnEnter = function ( self )
+		Overlay:Close()
+		LocalPlayer():ConCommand( self:GetValue() )
+	end
+
 
 end
 
