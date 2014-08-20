@@ -2,6 +2,8 @@
 ----
 -- This is a development section for players who wish to add their own commands to ECS.
 
+ECS.SelectMaterial = "models/debug/debugwhite"
+
 ECS.Whitelist = {
 	"prop_physics",
 	"prop_vehicle_prisoner_pod",
@@ -156,10 +158,12 @@ function ECS.AddEnt( ply, ent, color )
 	if ECS.IsSelected( ply, ent ) then return end
 
 	ECS.Selections[ ply ][ ent ] = {
+		Material = ent:GetMaterial(),
 		Color = ent:GetColor(),
 		Mode = ent:GetRenderMode()
 	}
 
+	ent:SetMaterial( ECS.SelectMaterial )
 	ent:SetRenderMode( 4 )
 	if color then ent:SetColor( color ) else ent:SetColor( ECS.GetPlyColor( ply ) ) end
 end
@@ -185,9 +189,10 @@ function ECS.RemoveEnt( ply, ent )
 	ECS.Selections[ ply ] = ECS.GetSelection( ply )
 
 	if ECS.Selections[ ply ][ ent ] then
+		ent:SetMaterial( ECS.Selections[ ply ][ ent ].Material )
 		ent:SetRenderMode( ECS.Selections[ ply ][ ent ].Mode )
 		ent:SetColor( ECS.Selections[ ply ][ ent ].Color )
-
+		
 		ECS.Selections[ ply ][ ent ] = nil
 
 		if table.Count( ECS.Selections[ ply ] ) == 0 then ECS.Selections[ ply ] = nil end

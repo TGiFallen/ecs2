@@ -17,7 +17,7 @@ ECS.NewCommand( "select", 1, function ( ply, args )
 	if IsValid( trace ) then ECS.AddEnt( ply, trace ) end
 end )
 
--- Removes your aim entity from your current selection.
+---- Removes your aim entity from your current selection.
 -- @function deselect
 -- @tparam[opt=nil] string all Removes all entities from your selection.
 -- @usage ecs deselect all // This will clear all entities from your selection.
@@ -104,6 +104,7 @@ ECS.NewCommand( "selectload", 2, function ( ply, args )
 		end
 
 		ECS.Selections[ ply ][ ent ] = info		
+		ent:SetMaterial( ECS.SelectMaterial )
 		ent:SetRenderMode( 4 )
 		ent:SetColor( color )
 	end
