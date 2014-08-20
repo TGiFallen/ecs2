@@ -37,10 +37,11 @@ end )
 
 -- Build the ECS overlay
 local function CommandOverlay( ply, cmd, args )
+	print("test")
 
 	-- Main Overlay Window
 	local Overlay = vgui.Create( "DFrame" )
-		Overlay:SetSize( 400, 100 )
+		Overlay:SetSize( 400, 57 )
 		Overlay:Center()
 		Overlay:SetTitle( "" )
 		Overlay:SetVisible( true )
@@ -150,7 +151,7 @@ local function CommandOverlay( ply, cmd, args )
 
 	-- Info Pane
 	local Info = vgui.Create( "DPanel", Overlay )
-		Info:SetSize( 120, 73 )
+		Info:SetSize( 120, 30 )
 		Info:SetPos( Overlay:GetWide() - 122, 25 )
 		Info:SetVisible( true )
 
@@ -158,36 +159,58 @@ local function CommandOverlay( ply, cmd, args )
 		draw.RoundedBox( 0, 0, 0, self:GetWide(), self:GetTall(), Color(51, 51, 51) )
 		draw.RoundedBox( 0, 1, 1, self:GetWide() - 2, self:GetTall() - 2, Color(71, 81, 91) )
 
-		draw.SimpleTextOutlined( "Selected Ents: 999", "DermaDefaultBold", 4, 8, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
-		draw.SimpleTextOutlined( "Saved Selections: 0", "DermaDefaultBold", 4, 25, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
+		draw.SimpleTextOutlined( "Selected Ents: 999", "DermaDefaultBold", 4, 0, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
+		draw.SimpleTextOutlined( "Saved Selections: 0", "DermaDefaultBold", 4, 15, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
 	end
 
-	-- Command Bar
-	local CommandBar = vgui.Create( "DPanel", Overlay )
-		CommandBar:SetSize( 275, 30 )
-		CommandBar:SetPos( 2, 25 )
-		CommandBar:SetVisible( true )
 
-	local CommandText = vgui.Create( "DTextEntry", CommandBar )
-		CommandText:SetPos( 0, 0 )
-		CommandText:SetSize( CommandBar:GetWide(), CommandBar:GetTall() )
+	-- Command Bar
+	local CommandText = vgui.Create( "DTextEntry", Overlay )
+		CommandText:SetSize( 275, 30 )
+		CommandText:SetPos( 2, 25 )
 		CommandText:SetText( "Please enter a command" )
 		CommandText:SelectAllOnFocus( true )
 		CommandText:RequestFocus() 
 
+	CommandText.TextColor = Color(127, 127, 127)
+	CommandText.ValidCommand = false
+
 	local Blink = 0
 	CommandText.Paint = function ( self )
-		draw.RoundedBox( 0, 0, 0, self:GetWide(), self:GetTall(), Color(51, 51, 51) )
-		draw.RoundedBox( 0, 1, 1, self:GetWide() - 2, self:GetTall() - 2, Color(71, 81, 91) )
+		draw.RoundedBoxEx( 8, 0, 0, self:GetWide(), self:GetTall(), Color(51, 51, 51), false, false, true, false )
+		draw.RoundedBoxEx( 8, 1, 1, self:GetWide() - 2, self:GetTall() - 2, Color(71, 81, 91), false, false, true, false )
 
 		Blink = (Blink + 1) % 30
 
-		draw.SimpleTextOutlined( self:GetValue() .. ( Blink > 15 and " ►" or "" ), "DermaDefaultBold", 4, 8, Color(225, 225, 225), 0, 0, 1, Color(51, 51, 51) )
+		local text = self:GetValue()
+		if text ~= "Please enter a command" then text = "ecs " .. self:GetValue() end
+		draw.SimpleTextOutlined(  text .. ( Blink > 15 and " ►" or "" ), "DermaDefaultBold", 4, 8, CommandText.TextColor, 0, 0, 1, Color(51, 51, 51) )
+	end
+
+	CommandText.OnTextChanged = function ( self )
+		local sub = string.Explode( " ", self:GetValue() )
+
+		for _, v in pairs ( ECS.CommandList ) do
+			if string.find( sub[1] or "", _ ) then 
+				CommandText.TextColor = Color(225, 225, 225)
+				CommandText.ValidCommand = true
+
+				return
+			end
+		end
+
+		CommandText.TextColor = Color(255, 127, 127)
+		CommandText.ValidCommand = false
 	end
 
 	CommandText.OnEnter = function ( self )
 		Overlay:Close()
-		LocalPlayer():ConCommand( self:GetValue() )
+		if CommandText.ValidCommand then LocalPlayer():ConCommand( "ecs " .. self:GetValue() ) end
+	end
+
+	CommandText.OnLoseFocus = function ( self )
+		self:RequestFocus()
+		if self:GetValue() == "Please enter a command" then self:SelectAll() end
 	end
 
 
